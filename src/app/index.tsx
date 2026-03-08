@@ -1,98 +1,152 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+/**
+ * Home screen: camera preview, object detection, controls.
+ */
+
+import { useObjectDetection, SSDLITE_320_MOBILENET_V3_LARGE } from 'react-native-executorch';
+import { useRef, useState, useCallback } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { CameraPreview } from '@/components/CameraPreview';
+import { ControlPanel } from '@/components/ControlPanel';
+import { DetectionList } from '@/components/DetectionList';
+import { DetectionOverlay } from '@/components/DetectionOverlay';
+import { useDetectionLoop } from '@/hooks/useDetectionLoop';
+import { addResult } from '@/store/resultsStore';
+import type { Detection } from '@/types/detection';
+import { Spacing } from '@/constants/theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const PREVIEW_ASPECT = 4 / 3;
+const PREVIEW_HEIGHT = SCREEN_WIDTH / PREVIEW_ASPECT;
 
 export default function HomeScreen() {
+  const cameraRef = useRef<import('expo-camera').CameraView>(null);
+
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [confidenceThreshold, setConfidenceThreshold] = useState(0.7);
+  const [top5Only, setTop5Only] = useState(false);
+  const [latestResult, setLatestResult] = useState<{
+    uri: string;
+    width: number;
+    height: number;
+    detections: Detection[];
+    inferenceTimeMs: number;
+  } | null>(null);
+
+  const detection = useObjectDetection({
+    model: SSDLITE_320_MOBILENET_V3_LARGE,
+  });
+
+  const onDetectionResult = useCallback(
+    (result: { uri: string; width: number; height: number; detections: Detection[]; inferenceTimeMs: number }) => {
+      setLatestResult(result);
+    },
+    []
+  );
+
+  useDetectionLoop({
+    cameraRef,
+    isActive: isDetecting,
+    isGenerating: detection.isGenerating,
+    forward: detection.forward,
+    confidenceThreshold,
+    onResult: onDetectionResult,
+    onError: (err) => console.warn('Detection error:', err),
+  });
+
+  const filteredDetections = latestResult
+    ? latestResult.detections.filter((d) => d.score >= confidenceThreshold)
+    : [];
+  const displayDetections = top5Only ? filteredDetections.slice(0, 5) : filteredDetections;
+
+  const handleCaptureResult = useCallback(() => {
+    if (!latestResult) return;
+    addResult({
+      uri: latestResult.uri,
+      timestamp: Date.now(),
+      detections: latestResult.detections,
+      inferenceTimeMs: latestResult.inferenceTimeMs,
+    });
+  }, [latestResult]);
+
+  const modelError = detection.error?.message ?? null;
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
+        <View style={[styles.previewContainer, { height: PREVIEW_HEIGHT }]}>
+          <CameraPreview ref={cameraRef} style={StyleSheet.absoluteFill} />
+          {latestResult && (
+            <>
+              <Image
+                source={{ uri: latestResult.uri }}
+                style={[StyleSheet.absoluteFill, styles.overlayImage]}
+                contentFit="fill"
+              />
+              <DetectionOverlay
+                detections={displayDetections}
+                imageWidth={latestResult.width}
+                imageHeight={latestResult.height}
+                displayWidth={SCREEN_WIDTH}
+                displayHeight={PREVIEW_HEIGHT}
+              />
+            </>
+          )}
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+        <View style={styles.bottom}>
+          <View style={styles.detectionList}>
+            <DetectionList
+              detections={filteredDetections}
+              topN={top5Only ? 5 : undefined}
+              confidenceThreshold={confidenceThreshold}
+            />
+          </View>
+          <ControlPanel
+            isDetecting={isDetecting}
+            onToggleDetection={() => setIsDetecting((v) => !v)}
+            confidenceThreshold={confidenceThreshold}
+            onConfidenceChange={setConfidenceThreshold}
+            top5Only={top5Only}
+            onTop5Toggle={() => setTop5Only((v) => !v)}
+            onCaptureResult={handleCaptureResult}
+            inferenceTimeMs={latestResult?.inferenceTimeMs ?? null}
+            detectionCount={filteredDetections.length}
+            isModelReady={detection.isReady}
+            modelError={modelError}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
+        </View>
       </SafeAreaView>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: '#000',
   },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  previewContainer: {
+    width: '100%',
+    overflow: 'hidden',
+  },
+  overlayImage: {
+    backgroundColor: 'transparent',
+  },
+  bottom: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    padding: Spacing.three,
+    gap: Spacing.two,
   },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  detectionList: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    padding: Spacing.two,
+    maxHeight: 140,
   },
 });
