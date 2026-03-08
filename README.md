@@ -23,7 +23,7 @@ A polished Expo React Native app for **near real-time on-device object detection
 ## Install
 
 ```bash
-npm install
+yarn install
 ```
 
 ## Run
@@ -31,16 +31,12 @@ npm install
 ### iOS (custom dev build)
 
 ```bash
-npx expo run:ios
+yarn ios:device # To test on a real device
+yarn ios # To test on a simulator
 ```
 
 This builds a development client with native modules. Use a connected iPhone or iOS Simulator.
 
-### Android
-
-```bash
-npx expo run:android
-```
 
 ### Why not Expo Go?
 
@@ -76,7 +72,7 @@ src/
 
 Instead of running inference on every camera frame (which would overwhelm the device), the app:
 
-1. Captures a still image from the camera every **700–1000 ms** (default ~850 ms)
+1. Captures a still image from the camera every **X ms**
 2. Runs object detection on that image
 3. Skips capture if inference is already in progress (no queue buildup)
 4. Displays the latest result with bounding boxes over the captured frame
