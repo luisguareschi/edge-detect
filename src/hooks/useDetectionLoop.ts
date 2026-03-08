@@ -4,14 +4,13 @@
  * Skips capture when inference is already running to avoid queue buildup.
  */
 
-import { useCallback, useEffect, useRef } from 'react';
 import type { CameraView } from 'expo-camera';
+import { useCallback, useEffect, useRef } from 'react';
 
 import type { Detection } from '@/types/detection';
-import { scaleDetectionsToImage, MODEL_INPUT_SIZE } from '@/utils/scaleDetections';
 import { now } from '@/utils/time';
 
-const POLL_INTERVAL_MS = 850;
+const POLL_INTERVAL_MS = 100;
 
 export interface DetectionResult {
   uri: string;
@@ -52,8 +51,9 @@ export function useDetectionLoop({
 
     try {
       const photo = await camera.takePictureAsync({
-        quality: 0.8,
+        quality: 0.5,
         skipProcessing: false,
+        shutterSound: false,
       });
 
       if (!photo?.uri) return;
@@ -68,18 +68,11 @@ export function useDetectionLoop({
         console.log(`[DetectionLoop] inference ${inferenceTimeMs}ms, ${rawDetections.length} detections`);
       }
 
-      const scaled = scaleDetectionsToImage(
-        rawDetections as Detection[],
-        MODEL_INPUT_SIZE,
-        width,
-        height
-      );
-
       onResultRef.current({
         uri: photo.uri,
         width,
         height,
-        detections: scaled,
+        detections: rawDetections as Detection[],
         inferenceTimeMs,
       });
     } catch (err) {

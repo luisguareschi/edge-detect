@@ -2,13 +2,14 @@
  * Results screen: gallery of saved detection snapshots.
  */
 
-import React, { useState, useCallback } from 'react';
-import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
+import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
 import { ResultCard } from '@/components/ResultCard';
-import { getResults } from '@/store/resultsStore';
 import { Spacing } from '@/constants/theme';
+import { getResults } from '@/store/resultsStore';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ResultsScreen() {
   const [results, setResults] = useState(getResults());
@@ -31,22 +32,28 @@ export default function ResultsScreen() {
   }
 
   return (
-    <FlatList
-      data={results}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <ResultCard result={item} />}
-      contentContainerStyle={styles.list}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={() => setResults(getResults())}
-        />
-      }
-    />
+    <SafeAreaView style={[styles.container]}>
+        <FlatList
+        data={results}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <ResultCard result={item} />}
+        contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => setResults(getResults())}
+          />
+        }
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
   list: {
     padding: Spacing.three,
     paddingBottom: Spacing.six,

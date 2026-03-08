@@ -3,7 +3,7 @@
  * Aligned with react-native-executorch Detection output.
  */
 
-/** Bounding box coordinates (model output space, typically 320x320) */
+/** Bounding box coordinates in the original image pixel space. */
 export interface Bbox {
   x1: number;
   y1: number;
@@ -18,7 +18,7 @@ export interface Detection {
   score: number;
 }
 
-/** Detection with bbox scaled to display/image coordinates */
+/** Detection with bbox coordinates in image pixel space. */
 export interface ScaledDetection extends Detection {
   bbox: Bbox;
 }
