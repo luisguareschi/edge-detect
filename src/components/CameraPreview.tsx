@@ -4,7 +4,7 @@
  */
 
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Spacing } from '@/constants/theme';
@@ -14,6 +14,16 @@ export const CameraPreview = forwardRef<CameraView, { style?: object }>(function
   ref
 ) {
   const [permission, requestPermission] = useCameraPermissions();
+  const [lenses, setLenses] = useState<string[]>([]);
+  const [selectedLens, setSelectedLens] = useState<string>();
+
+  console.log(lenses);
+
+  useEffect(() => {
+    if (lenses.length > 0 && !selectedLens) {
+      setSelectedLens(lenses[lenses.length - 1]);
+    }
+  }, [lenses, selectedLens]);
 
   if (!permission) {
     return (
@@ -40,6 +50,9 @@ export const CameraPreview = forwardRef<CameraView, { style?: object }>(function
       ref={ref}
       style={[styles.camera, style]}
       facing="back"
+      zoom={0}
+      selectedLens={selectedLens ?? undefined}
+      onAvailableLensesChanged={(e) => setLenses(e.lenses)}
     />
   );
 });
