@@ -26,7 +26,6 @@ export default function HomeScreen() {
 
   const [isDetecting, setIsDetecting] = useState(false);
   const [confidenceThreshold, setConfidenceThreshold] = useState(0.7);
-  const [top5Only, setTop5Only] = useState(false);
   const [latestResult, setLatestResult] = useState<{
     uri: string;
     width: number;
@@ -59,7 +58,6 @@ export default function HomeScreen() {
   const filteredDetections = latestResult
     ? latestResult.detections.filter((d) => d.score >= confidenceThreshold)
     : [];
-  const displayDetections = top5Only ? filteredDetections.slice(0, 5) : filteredDetections;
 
   const handleCaptureResult = useCallback(() => {
     if (!latestResult) return;
@@ -87,7 +85,7 @@ export default function HomeScreen() {
                 contentFit="fill"
               />
               <DetectionOverlay
-                detections={displayDetections}
+                detections={filteredDetections}
                 imageWidth={latestResult.width}
                 imageHeight={latestResult.height}
                 displayWidth={SCREEN_WIDTH}
@@ -101,7 +99,6 @@ export default function HomeScreen() {
           <View style={styles.detectionList}>
             <DetectionList
               detections={filteredDetections}
-              topN={top5Only ? 5 : undefined}
               confidenceThreshold={confidenceThreshold}
             />
           </View>
@@ -110,8 +107,6 @@ export default function HomeScreen() {
             onToggleDetection={() => setIsDetecting((v) => !v)}
             confidenceThreshold={confidenceThreshold}
             onConfidenceChange={setConfidenceThreshold}
-            top5Only={top5Only}
-            onTop5Toggle={() => setTop5Only((v) => !v)}
             onCaptureResult={handleCaptureResult}
             inferenceTimeMs={latestResult?.inferenceTimeMs ?? null}
             detectionCount={filteredDetections.length}

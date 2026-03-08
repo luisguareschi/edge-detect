@@ -1,6 +1,6 @@
 /**
  * Control panel for detection: start/stop, confidence threshold,
- * top-5 toggle, capture result, and stats display.
+ * capture result, and stats display.
  */
 
 import React from 'react';
@@ -13,8 +13,6 @@ interface ControlPanelProps {
   onToggleDetection: () => void;
   confidenceThreshold: number;
   onConfidenceChange: (value: number) => void;
-  top5Only: boolean;
-  onTop5Toggle: () => void;
   onCaptureResult: () => void;
   inferenceTimeMs: number | null;
   detectionCount: number;
@@ -27,8 +25,6 @@ export function ControlPanel({
   onToggleDetection,
   confidenceThreshold,
   onConfidenceChange,
-  top5Only,
-  onTop5Toggle,
   onCaptureResult,
   inferenceTimeMs,
   detectionCount,
@@ -92,13 +88,6 @@ export function ControlPanel({
 
       <View style={styles.row}>
         <Pressable
-          onPress={onTop5Toggle}
-          style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}>
-          <Text style={styles.secondaryButtonText}>
-            {top5Only ? 'Top 5 only ✓' : 'Show all'}
-          </Text>
-        </Pressable>
-        <Pressable
           onPress={onCaptureResult}
           disabled={detectionCount === 0}
           style={({ pressed }) => [
@@ -145,7 +134,7 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     flex: 1,
-    paddingVertical: Spacing.two,
+    paddingVertical: Spacing.three,
     borderRadius: 8,
     backgroundColor: '#2a2a2a',
     alignItems: 'center',

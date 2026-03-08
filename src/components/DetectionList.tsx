@@ -1,6 +1,5 @@
 /**
  * Scrollable list of detections sorted by confidence.
- * Supports optional top-N limit.
  */
 
 import React from 'react';
@@ -11,22 +10,18 @@ import { Spacing } from '@/constants/theme';
 
 interface DetectionListProps {
   detections: Detection[];
-  topN?: number;
   confidenceThreshold: number;
 }
 
 export function DetectionList({
   detections,
-  topN,
   confidenceThreshold,
 }: DetectionListProps): React.ReactElement {
   const filtered = detections
     .filter((d) => d.score >= confidenceThreshold)
     .sort((a, b) => b.score - a.score);
 
-  const display = topN ? filtered.slice(0, topN) : filtered;
-
-  if (display.length === 0) {
+  if (filtered.length === 0) {
     return (
       <View style={styles.empty}>
         <Text style={styles.emptyText}>No detections</Text>
@@ -36,7 +31,7 @@ export function DetectionList({
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-      {display.map((d, i) => {
+      {filtered.map((d, i) => {
         const label = typeof d.label === 'string' ? d.label : String(d.label);
         const scorePct = (d.score * 100).toFixed(1);
         return (
