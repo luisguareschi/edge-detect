@@ -5,7 +5,7 @@ A polished Expo React Native app for **near real-time on-device object detection
 ## Features
 
 - Live camera preview with back camera
-- Periodic frame capture (every ~850 ms) for object detection
+- Periodic frame capture (every ~X ms) for object detection
 - On-device inference with SSDLite MobileNetV3 Large (COCO 91 classes)
 - Bounding boxes, labels, and confidence scores over the latest captured frame
 - Confidence threshold slider (0.3–0.9)
