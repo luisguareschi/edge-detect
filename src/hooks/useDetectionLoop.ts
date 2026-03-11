@@ -11,6 +11,7 @@ import type { Detection } from '@/types/detection';
 import { now } from '@/utils/time';
 
 const POLL_INTERVAL_MS = 100;
+const CAPTURE_QUALITY = 0.4;
 
 export interface DetectionResult {
   uri: string;
@@ -51,8 +52,8 @@ export function useDetectionLoop({
 
     try {
       const photo = await camera.takePictureAsync({
-        quality: 0.5,
-        skipProcessing: false,
+        quality: CAPTURE_QUALITY,
+        skipProcessing: true,
         shutterSound: false,
       });
 

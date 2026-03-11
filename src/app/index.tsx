@@ -77,21 +77,21 @@ export default function HomeScreen() {
         <Text style={styles.text}>Edge Detect</Text>
         <View style={[styles.previewContainer, { height: PREVIEW_HEIGHT }]}>
           <CameraPreview ref={cameraRef} style={StyleSheet.absoluteFill} />
+          {latestResult && !isDetecting && (
+            <Image
+              source={{ uri: latestResult.uri }}
+              style={[StyleSheet.absoluteFill, styles.overlayImage]}
+              contentFit="fill"
+            />
+          )}
           {latestResult && (
-            <>
-              <Image
-                source={{ uri: latestResult.uri }}
-                style={[StyleSheet.absoluteFill, styles.overlayImage]}
-                contentFit="fill"
-              />
-              <DetectionOverlay
-                detections={filteredDetections}
-                imageWidth={latestResult.width}
-                imageHeight={latestResult.height}
-                displayWidth={SCREEN_WIDTH}
-                displayHeight={PREVIEW_HEIGHT}
-              />
-            </>
+            <DetectionOverlay
+              detections={filteredDetections}
+              imageWidth={latestResult.width}
+              imageHeight={latestResult.height}
+              displayWidth={SCREEN_WIDTH}
+              displayHeight={PREVIEW_HEIGHT}
+            />
           )}
         </View>
 

@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    zIndex: 1,
   },
   box: {
     position: 'absolute',
