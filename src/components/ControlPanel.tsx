@@ -3,10 +3,10 @@
  * capture result, and stats display.
  */
 
-import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Spacing } from '@/constants/theme';
+import { Spacing } from "@/constants/theme";
 
 interface ControlPanelProps {
   isDetecting: boolean;
@@ -48,16 +48,17 @@ export function ControlPanel({
             isDetecting ? styles.stopButton : styles.startButton,
             !isModelReady && styles.disabled,
             pressed && styles.pressed,
-          ]}>
+          ]}
+        >
           <Text style={styles.mainButtonText}>
-            {isDetecting ? 'Stop Detection' : 'Start Detection'}
+            {isDetecting ? "Stop Detection" : "Start Detection"}
           </Text>
         </Pressable>
       </View>
 
       <View style={styles.stats}>
         <Text style={styles.statText}>
-          {inferenceTimeMs != null ? `${inferenceTimeMs} ms` : '—'} inference
+          {inferenceTimeMs != null ? `${inferenceTimeMs} ms` : "—"} inference
         </Text>
         <Text style={styles.statText}>{detectionCount} detections</Text>
       </View>
@@ -67,7 +68,8 @@ export function ControlPanel({
         <View style={styles.sliderContainer}>
           <Pressable
             style={styles.sliderBtn}
-            onPress={() => onConfidenceChange(Math.max(0.3, confidenceThreshold - 0.1))}>
+            onPress={() => onConfidenceChange(Math.max(0.3, confidenceThreshold - 0.1))}
+          >
             <Text style={styles.sliderBtnText}>−</Text>
           </Pressable>
           <View style={styles.sliderTrack}>
@@ -80,7 +82,8 @@ export function ControlPanel({
           </View>
           <Pressable
             style={styles.sliderBtn}
-            onPress={() => onConfidenceChange(Math.min(0.9, confidenceThreshold + 0.1))}>
+            onPress={() => onConfidenceChange(Math.min(0.9, confidenceThreshold + 0.1))}
+          >
             <Text style={styles.sliderBtnText}>+</Text>
           </Pressable>
         </View>
@@ -94,7 +97,8 @@ export function ControlPanel({
             styles.secondaryButton,
             detectionCount === 0 && styles.disabled,
             pressed && styles.pressed,
-          ]}>
+          ]}
+        >
           <Text style={styles.secondaryButtonText}>Capture Result</Text>
         </Pressable>
       </View>
@@ -104,44 +108,44 @@ export function ControlPanel({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: Spacing.three,
     gap: Spacing.two,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: Spacing.two,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   mainButton: {
     flex: 1,
     paddingVertical: Spacing.three,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   startButton: {
-    backgroundColor: '#00aa55',
+    backgroundColor: "#00aa55",
   },
   stopButton: {
-    backgroundColor: '#cc3333',
+    backgroundColor: "#cc3333",
   },
   mainButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   secondaryButton: {
     flex: 1,
     paddingVertical: Spacing.three,
     borderRadius: 8,
-    backgroundColor: '#2a2a2a',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#2a2a2a",
+    alignItems: "center",
+    justifyContent: "center",
   },
   secondaryButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
   },
   disabled: {
@@ -151,53 +155,53 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   stats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   statText: {
-    color: '#aaa',
+    color: "#aaa",
     fontSize: 13,
   },
   sliderRow: {
     gap: Spacing.one,
   },
   label: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 13,
   },
   sliderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: Spacing.one,
   },
   sliderBtn: {
     width: 36,
     height: 36,
     borderRadius: 8,
-    backgroundColor: '#2a2a2a',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#2a2a2a",
+    alignItems: "center",
+    justifyContent: "center",
   },
   sliderBtnText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   sliderTrack: {
     flex: 1,
     height: 8,
-    backgroundColor: '#333',
+    backgroundColor: "#333",
     borderRadius: 4,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   sliderFill: {
-    height: '100%',
-    backgroundColor: '#00aa55',
+    height: "100%",
+    backgroundColor: "#00aa55",
     borderRadius: 4,
   },
   error: {
-    color: '#ff6b6b',
+    color: "#ff6b6b",
     fontSize: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

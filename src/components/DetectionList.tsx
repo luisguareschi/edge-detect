@@ -2,11 +2,11 @@
  * Scrollable list of detections sorted by confidence.
  */
 
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-import type { Detection } from '@/types/detection';
-import { Spacing } from '@/constants/theme';
+import type { Detection } from "@/types/detection";
+import { Spacing } from "@/constants/theme";
 
 interface DetectionListProps {
   detections: Detection[];
@@ -18,7 +18,7 @@ export function DetectionList({
   confidenceThreshold,
 }: DetectionListProps): React.ReactElement {
   const filtered = detections
-    .filter((d) => d.score >= confidenceThreshold)
+    .filter(d => d.score >= confidenceThreshold)
     .sort((a, b) => b.score - a.score);
 
   if (filtered.length === 0) {
@@ -32,7 +32,7 @@ export function DetectionList({
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
       {filtered.map((d, i) => {
-        const label = typeof d.label === 'string' ? d.label : String(d.label);
+        const label = typeof d.label === "string" ? d.label : String(d.label);
         const scorePct = (d.score * 100).toFixed(1);
         return (
           <View key={i} style={styles.row}>
@@ -55,29 +55,29 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.one,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: Spacing.one,
     paddingHorizontal: Spacing.two,
   },
   label: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
     flex: 1,
   },
   score: {
-    color: '#00ff88',
+    color: "#00ff88",
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: Spacing.two,
   },
   empty: {
     padding: Spacing.three,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyText: {
-    color: '#888',
+    color: "#888",
     fontSize: 14,
   },
 });

@@ -3,11 +3,11 @@
  * Uses back camera and forwards ref for takePictureAsync.
  */
 
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { forwardRef, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { CameraView, useCameraPermissions } from "expo-camera";
+import React, { forwardRef, useEffect, useState } from "react";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Spacing } from '@/constants/theme';
+import { Spacing } from "@/constants/theme";
 
 export const CameraPreview = forwardRef<CameraView, { style?: object }>(function CameraPreview(
   { style },
@@ -38,7 +38,10 @@ export const CameraPreview = forwardRef<CameraView, { style?: object }>(function
       <View style={[styles.centered, style]}>
         <Text style={styles.message}>Camera access is required for object detection.</Text>
         <Text style={styles.hint}>Tap below to grant permission.</Text>
-        <Pressable onPress={requestPermission} style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
+        <Pressable
+          onPress={requestPermission}
+          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+        >
           <Text style={styles.buttonText}>Grant Permission</Text>
         </Pressable>
       </View>
@@ -52,7 +55,7 @@ export const CameraPreview = forwardRef<CameraView, { style?: object }>(function
       facing="back"
       zoom={0}
       selectedLens={selectedLens ?? undefined}
-      onAvailableLensesChanged={(e) => setLenses(e.lenses)}
+      onAvailableLensesChanged={e => setLenses(e.lenses)}
     />
   );
 });
@@ -63,35 +66,35 @@ const styles = StyleSheet.create({
   },
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1a1a1a",
     padding: Spacing.four,
   },
   message: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: Spacing.two,
   },
   hint: {
-    color: '#999',
+    color: "#999",
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: Spacing.four,
   },
   button: {
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.two,
     borderRadius: 8,
-    backgroundColor: '#0a84ff',
+    backgroundColor: "#0a84ff",
   },
   buttonPressed: {
     opacity: 0.8,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

@@ -4,11 +4,11 @@
  * Skips capture when inference is already running to avoid queue buildup.
  */
 
-import type { CameraView } from 'expo-camera';
-import { useCallback, useEffect, useRef } from 'react';
+import type { CameraView } from "expo-camera";
+import { useCallback, useEffect, useRef } from "react";
 
-import type { Detection } from '@/types/detection';
-import { now } from '@/utils/time';
+import type { Detection } from "@/types/detection";
+import { now } from "@/utils/time";
 
 const POLL_INTERVAL_MS = 100;
 const CAPTURE_QUALITY = 0.4;
@@ -66,7 +66,9 @@ export function useDetectionLoop({
       const inferenceTimeMs = now() - t0;
 
       if (__DEV__) {
-        console.log(`[DetectionLoop] inference ${inferenceTimeMs}ms, ${rawDetections.length} detections`);
+        console.log(
+          `[DetectionLoop] inference ${inferenceTimeMs}ms, ${rawDetections.length} detections`
+        );
       }
 
       onResultRef.current({
@@ -80,7 +82,7 @@ export function useDetectionLoop({
       const error = err instanceof Error ? err : new Error(String(err));
       onErrorRef.current?.(error);
       if (__DEV__) {
-        console.warn('[DetectionLoop] error:', error);
+        console.warn("[DetectionLoop] error:", error);
       }
     }
   }, [cameraRef, isGenerating, forward, confidenceThreshold]);

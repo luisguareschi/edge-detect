@@ -3,7 +3,7 @@
  * to the actual image dimensions.
  */
 
-import type { Detection, ScaledDetection } from '@/types/detection';
+import type { Detection, ScaledDetection } from "@/types/detection";
 
 const MODEL_INPUT_SIZE = 320;
 
@@ -20,7 +20,7 @@ export function scaleDetectionsToImage(
   const scaleX = imageWidth / modelInputSize;
   const scaleY = imageHeight / modelInputSize;
 
-  return detections.map((d) => ({
+  return detections.map(d => ({
     ...d,
     bbox: {
       x1: d.bbox.x1 * scaleX,

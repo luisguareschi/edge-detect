@@ -2,27 +2,27 @@
  * Home screen: camera preview, object detection, controls.
  */
 
-import { Image } from 'expo-image';
-import { useCallback, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { SSDLITE_320_MOBILENET_V3_LARGE, useObjectDetection } from 'react-native-executorch';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from "expo-image";
+import { useCallback, useRef, useState } from "react";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { SSDLITE_320_MOBILENET_V3_LARGE, useObjectDetection } from "react-native-executorch";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { CameraPreview } from '@/components/CameraPreview';
-import { ControlPanel } from '@/components/ControlPanel';
-import { DetectionList } from '@/components/DetectionList';
-import { DetectionOverlay } from '@/components/DetectionOverlay';
-import { Spacing } from '@/constants/theme';
-import { useDetectionLoop } from '@/hooks/useDetectionLoop';
-import { addResult } from '@/store/resultsStore';
-import type { Detection } from '@/types/detection';
+import { CameraPreview } from "@/components/CameraPreview";
+import { ControlPanel } from "@/components/ControlPanel";
+import { DetectionList } from "@/components/DetectionList";
+import { DetectionOverlay } from "@/components/DetectionOverlay";
+import { Spacing } from "@/constants/theme";
+import { useDetectionLoop } from "@/hooks/useDetectionLoop";
+import { addResult } from "@/store/resultsStore";
+import type { Detection } from "@/types/detection";
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const PREVIEW_ASPECT = 4 / 3;
 const PREVIEW_HEIGHT = SCREEN_WIDTH / PREVIEW_ASPECT;
 
 export default function HomeScreen() {
-  const cameraRef = useRef<import('expo-camera').CameraView>(null);
+  const cameraRef = useRef<import("expo-camera").CameraView>(null);
 
   const [isDetecting, setIsDetecting] = useState(false);
   const [confidenceThreshold, setConfidenceThreshold] = useState(0.7);
@@ -39,7 +39,13 @@ export default function HomeScreen() {
   });
 
   const onDetectionResult = useCallback(
-    (result: { uri: string; width: number; height: number; detections: Detection[]; inferenceTimeMs: number }) => {
+    (result: {
+      uri: string;
+      width: number;
+      height: number;
+      detections: Detection[];
+      inferenceTimeMs: number;
+    }) => {
       setLatestResult(result);
     },
     []
@@ -52,11 +58,11 @@ export default function HomeScreen() {
     forward: detection.forward,
     confidenceThreshold,
     onResult: onDetectionResult,
-    onError: (err) => console.warn('Detection error:', err),
+    onError: err => console.warn("Detection error:", err),
   });
 
   const filteredDetections = latestResult
-    ? latestResult.detections.filter((d) => d.score >= confidenceThreshold)
+    ? latestResult.detections.filter(d => d.score >= confidenceThreshold)
     : [];
 
   const handleCaptureResult = useCallback(() => {
@@ -73,7 +79,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
         <Text style={styles.text}>Edge Detect</Text>
         <View style={[styles.previewContainer, { height: PREVIEW_HEIGHT }]}>
           <CameraPreview ref={cameraRef} style={StyleSheet.absoluteFill} />
@@ -104,7 +110,7 @@ export default function HomeScreen() {
           </View>
           <ControlPanel
             isDetecting={isDetecting}
-            onToggleDetection={() => setIsDetecting((v) => !v)}
+            onToggleDetection={() => setIsDetecting(v => !v)}
             confidenceThreshold={confidenceThreshold}
             onConfidenceChange={setConfidenceThreshold}
             onCaptureResult={handleCaptureResult}
@@ -122,7 +128,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
   },
   safeArea: {
     flex: 1,
@@ -130,28 +136,28 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
   },
   previewContainer: {
-    width: '100%',
-    overflow: 'hidden',
+    width: "100%",
+    overflow: "hidden",
     borderRadius: 12,
   },
   overlayImage: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   bottom: {
     flex: 1,
     gap: Spacing.two,
   },
   detectionList: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
     borderRadius: 12,
     padding: Spacing.two,
     maxHeight: 140,
   },
   text: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: Spacing.two,
   },
 });

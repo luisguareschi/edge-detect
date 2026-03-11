@@ -3,7 +3,7 @@
  * Used by the Results screen to display captured snapshots.
  */
 
-import type { SavedResult } from '@/types/detection';
+import type { SavedResult } from "@/types/detection";
 
 let results: SavedResult[] = [];
 let idCounter = 0;
@@ -13,7 +13,7 @@ function generateId(): string {
   return `result-${Date.now()}-${idCounter}`;
 }
 
-export function addResult(result: Omit<SavedResult, 'id'>): SavedResult {
+export function addResult(result: Omit<SavedResult, "id">): SavedResult {
   const full: SavedResult = { ...result, id: generateId() };
   results = [full, ...results];
   return full;

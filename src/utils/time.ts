@@ -11,9 +11,9 @@ export function now(): number {
 export function formatTimestamp(ms: number): string {
   const d = new Date(ms);
   return d.toLocaleString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
