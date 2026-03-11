@@ -4,7 +4,7 @@
 
 import { Image } from "expo-image";
 import { useCallback, useRef, useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Alert, Dimensions, StyleSheet, Text, View } from "react-native";
 import { SSDLITE_320_MOBILENET_V3_LARGE, useObjectDetection } from "react-native-executorch";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -73,6 +73,7 @@ export default function HomeScreen() {
       detections: latestResult.detections,
       inferenceTimeMs: latestResult.inferenceTimeMs,
     });
+    Alert.alert("Result captured", "The result has been captured and added to the results list.");
   }, [latestResult]);
 
   const modelError = detection.error?.message ?? null;
